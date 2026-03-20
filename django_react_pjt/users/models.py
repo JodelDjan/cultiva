@@ -51,11 +51,12 @@ AGE_RANGE_CHOICES = [
 ROLE_CHOICES = [
         ('GEN_USER', 'general_user'),
         ('RESEARCHER', 'researcher'),
+        ('ADMIN', 'admin'),
     ]
     
    
     #Sign up fields
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
         first_name = models.CharField(max_length=40)
         last_name = models.CharField(max_length=40)
         email = models.EmailField(unique=True)
@@ -65,7 +66,7 @@ class CustomUser(AbstractBaseUser):
         is_active = models.BooleanField(default=True)
 
         USERNAME_FIELD = 'email'
-        REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
+        REQUIRED_FIELDS = ['first_name', 'last_name']
 
         def get_short_name(self):
             return self.email
