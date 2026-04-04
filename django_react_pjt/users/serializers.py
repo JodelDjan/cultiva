@@ -16,8 +16,8 @@ class GeneralProfileSerializer(serializers.ModelSerializer):
 class SignUpSerializer(serializers.ModelSerializer):
     password         = serializers.CharField(write_only=True)
     password2        = serializers.CharField(write_only=True)
-    manager_profile  = ResearcherProfileSerializer(required=False)
-    customer_profile = GeneralProfileSerializer(required=False)
+    researcher_profile  = ResearcherProfileSerializer(required=False)
+    general_profile = GeneralProfileSerializer(required=False)
 
     class Meta:
         model  = CustomUser
@@ -30,17 +30,17 @@ class SignUpSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        manager_data  = validated_data.pop('researcher_profile', None)
-        customer_data = validated_data.pop('general_profile', None)
+        researcher_data  = validated_data.pop('researcher_profile', None)
+        general_user_data = validated_data.pop('general_profile', None)
         validated_data.pop('password2')
 
         user = CustomUser(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
 
-        if manager_data:
-            ResearcherProfile.objects.create(user=user, **manager_data)
-        if customer_data:
-            GeneralProfile.objects.create(user=user, **customer_data)
+        if researcher_data:
+            ResearcherProfile.objects.create(user=user, **researcher_data)
+        if general_user_data:
+            GeneralProfile.objects.create(user=user, **general_user_data)
 
         return user

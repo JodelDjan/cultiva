@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div>
       <Navbar setPosts={setPosts} />
-      {role === 'manager' && <CreatePost setPosts={setPosts} />}
+      {role === 'researcher' && <CreatePost setPosts={setPosts} />}
       <Feed posts={posts} />
     </div>
   )

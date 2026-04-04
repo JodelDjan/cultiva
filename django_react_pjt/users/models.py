@@ -2,6 +2,40 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin 
 # Create your models here.
 
+ #Tag Choices
+TAG_CHOICES =[
+        ('health and fitness', 'Health and Fitness'),
+        ('mental health', 'Mental Health'),
+        ('medicine', 'Medicine'),
+        ('law', 'Law'),
+        ('technology', 'Technology'),
+        ('public health', 'Public Health'),
+        ('nutrition', 'Nutrition'),
+        ('molecular biology', 'Molecular Biology'),
+        ('pharmacology', 'Pharmacology'),
+        ('biomedical science', 'Biomedical Science'),
+        ('microbiology', 'Microbiology'),
+        ('anatomy and physiology', 'Anatomy and Physiology'),
+        ('immunology', 'Immunology'),
+        ('environmental science', 'Environmental Science'),
+        ('business', 'Business'),
+        ('software development', 'Software Development'),
+    ]
+
+    # Range Choices
+AGE_RANGE_CHOICES = [
+        ('18-25', '18-25'),
+        ('25-40', '25-40'),
+        ('40-60', '40-60'),
+        ('60+',   '60+'),
+    ]
+
+ROLE_CHOICES = [
+    ('general_user', 'General User'),
+    ('researcher',   'Researcher'),
+    ('admin',        'Admin'),
+]
+
 #Custom user manager
 class CustomUserManager(BaseUserManager):
 
@@ -20,39 +54,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('role', 'admin')
         return self.create_user(email, password, **extra_fields)
     
- #Tag Choices
-TAG_CHOICES =[
-        ('health and fitness', 'Health and Fitness'),
-        ('mental health', 'Mental Health'),
-        ('nedicine', 'Medicine'),
-        ('law', 'Law'),
-        ('technology', 'Technology'),
-        ('public health', 'Public Health'),
-        ('nutrition', 'Nutrition'),
-        ('molecular biology', 'Molecular Biology'),
-        ('pharmacology', 'Pharmacology'),
-        ('biomedical science', 'Biomedical Science'),
-        ('microbiology', 'Microbiology'),
-        ('anantomy and physiology', 'Anatomy and Physiology'),
-        ('immunology', 'Immunology'),
-        ('environmental science', 'Environmental Science'),
-        ('business', 'Business'),
-        ('software development', 'Software Development'),
-    ]
 
-    # Range Choices
-AGE_RANGE_CHOICES = [
-        ('18-25', '18-25'),
-        ('25-40', '25-40'),
-        ('40-60', '40-60'),
-        ('60+',   '60+'),
-    ]
-
-ROLE_CHOICES = [
-        ('GEN_USER', 'general_user'),
-        ('RESEARCHER', 'researcher'),
-        ('ADMIN', 'admin'),
-    ]
     
    
     #Sign up fields
