@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest, getAuthHeaders, APIError } from "../api";
+import { apiRequest, APIError } from "../api";
 
 export default function Login() {
   const navigate = useNavigate();

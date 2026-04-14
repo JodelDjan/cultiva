@@ -3,29 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest, APIError } from "../api";
 
 const TAG_OPTIONS = [
-  "Health & Fitness",
-  "Mental Health",
-  "Medicine",
-  "Wellbeing",
-  "Education",
-  "Public Health",
-  "Nutrition",
-  "Epidemiology",
-  "Neuroscience",
-  "Clinical Research",
-  "Behavioural Science",
-  "Health Policy",
-  "Biomedical Science",
-  "Genetics",
-  "Immunology",
-  "Environmental Health",
+  'Health and Fitness',
+  'Mental Health',
+  'Medicine',
+  'Law',
+  'Technology',
+  'Public Health',
+  'Nutrition',
+  'Molecular Biology',
+  'Pharmacology',
+  'Biomedical Science',
+  'Microbiology',
+  'Anatomy and Physiology',
+  'Immunology',
+  'Environmental Science',
+  'Business',
+  'Software Development',
 ];
 
 
 export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);  // ADD THIS
+  const [isLoading, setIsLoading] = useState(false);  
 
   const [form, setForm] = useState({
     firstName: "",
@@ -42,7 +42,7 @@ export default function Register() {
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-    if (error) setError("");  // Clear error on input
+    if (error) setError("");  // Clears user error on input
   }
 
 function toggleTag(tag) {
@@ -110,9 +110,6 @@ function toggleInterest(tag) {
       setIsLoading(false);
     }
   }
-
-  // add disabled={isLoading} to form inputs and button
-
 
   const isResearcher = form.role === "researcher";
 
@@ -282,8 +279,8 @@ function toggleInterest(tag) {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <button type="submit" style={{ marginTop: "1.5rem" }}>
-          Register
+        <button type="submit" disabled={isLoading} style={{ marginTop: "1.5rem" }}>
+          {isLoading ? 'Registering...' : 'Register'}
         </button>
       </form>
     </div>
