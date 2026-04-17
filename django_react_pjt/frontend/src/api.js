@@ -67,3 +67,8 @@ export const apiRequest = async (endpoint, options = {}) => {
 
   return data
 }
+
+export const getProfile = () =>
+  fetch(`${BASE_URL}/users/profile/`, {
+    headers: { Authorization: `Bearer ${token()}` }
+  }).then(res => res.json())
