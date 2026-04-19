@@ -4,15 +4,17 @@ const token = () => localStorage.getItem('token')
 export const getPosts = () =>
   apiRequest('/posts/')
 
-export const createPost = (content) =>
-  fetch(`${BASE_URL}/posts/create/`, {
+export const createPost = (formData) =>
+  apiRequest('/posts/create/', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token()}`
-    },
-    body: JSON.stringify({ content })
-  }).then(res => res.json())
+    body: JSON.stringify({
+      title:            formData.title,
+      body:             formData.body,
+      tags:             formData.tags,
+      max_participants: formData.max_participants,
+      start_date:       formData.start_date,
+    })
+  })
 
 export const searchPosts = (query) =>
   apiRequest(`/posts/search/?q=${query}`)
