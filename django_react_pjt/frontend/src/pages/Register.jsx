@@ -32,6 +32,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
+    password2: "",
     role: "general_user",
     researchArea: "",
     bio: "",
@@ -69,8 +70,42 @@ function toggleInterest(tag) {
   });
 }
 
+function validate() {
+  if (!form.firstName.trim()) return 'First name is required.'
+  if (!form.lastName.trim())  return 'Last name is required.'
+  if (!form.email.trim())     return 'Email is required.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    return 'Please enter a valid email address.'
+  if (!form.password)         return 'Password is required.'
+  if (form.password.length < 8)
+    return 'Password must be at least 8 characters.'
+  if (!/[A-Z]/.test(form.password))
+    return 'Password must contain at least one uppercase letter.'
+  if (!/[0-9]/.test(form.password))
+    return 'Password must contain at least one number.'
+  if (!/[!@#$%^&*]/.test(form.password))
+    return 'Password must contain at least one special character (!@#$%^&*).'
+  if (form.password !== form.password2)
+    return 'Passwords do not match.'
+  if (form.role === 'researcher') {
+    if (!form.researchArea.trim()) return 'Research area is required.'
+    if (!form.bio.trim())          return 'Bio is required.'
+    if (form.tags.length === 0)    return 'Please select at least one tag.'
+  }
+  if (form.role === 'general_user') {
+    if (!form.ageRange)              return 'Please select an age range.'
+    if (form.interests.length === 0) return 'Please select at least one interest.'
+  }
+  return null
+}
+
   async function handleSubmit(e) {
     e.preventDefault();
+    const validationError = validate()
+    if (validationError){
+      setError(validationError)
+      return
+    }
     setError("");
     setIsLoading(true);
 
@@ -79,6 +114,7 @@ function toggleInterest(tag) {
       last_name: form.lastName,
       email: form.email,
       password: form.password,
+      password2: form.password2,
       role: form.role,
       researchArea: form.researchArea,
       bio: form.bio,
@@ -159,6 +195,18 @@ function toggleInterest(tag) {
             value={form.password}
             onChange={handleChange}
             required
+          />
+        </label>
+
+        <label>
+          Confirm Password
+          <input
+            type="password"
+            name="password2"
+            value={form.password2}
+            onChange={handleChange}
+            required
+            disabled={isLoading}
           />
         </label>
 

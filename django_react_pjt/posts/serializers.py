@@ -39,6 +39,9 @@ class CreatePostSerializer(serializers.ModelSerializer):
             'tags', 'state', 'research_link'
         ]
 
+    def validate_tags(self, value):
+        return list(value)
+
     def validate(self, data):
         if not data.get('tags'):
             raise serializers.ValidationError("At least one tag is required.")

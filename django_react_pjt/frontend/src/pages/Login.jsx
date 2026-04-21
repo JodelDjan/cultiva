@@ -19,8 +19,25 @@ export default function Login() {
     if (error) setError("");
   }
 
+function validate() {
+  if (!form.email.trim())
+    return 'Email is required.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    return 'Please enter a valid email address.'
+  if (!form.password)
+    return 'Password is required.'
+  if (form.password.length < 8)
+    return 'Password must be at least 8 characters.'
+  return null
+}
+
 async function handleSubmit(e) {
   e.preventDefault()
+    const validationError = validate()
+    if (validationError){
+      setError(validationError)
+      return
+    }
   setError("")
   setIsLoading(true)
 

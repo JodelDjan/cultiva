@@ -4,22 +4,22 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 #Tag Choices
 TAG_CHOICES =[
-        ('health and fitness', 'Health and Fitness'),
-        ('mental health', 'Mental Health'),
-        ('medicine', 'Medicine'),
-        ('law', 'Law'),
-        ('technology', 'Technology'),
-        ('public health', 'Public Health'),
-        ('nutrition', 'Nutrition'),
-        ('molecular biology', 'Molecular Biology'),
-        ('pharmacology', 'Pharmacology'),
-        ('biomedical science', 'Biomedical Science'),
-        ('microbiology', 'Microbiology'),
-        ('anatomy and physiology', 'Anatomy and Physiology'),
-        ('immunology', 'Immunology'),
-        ('environmental science', 'Environmental Science'),
-        ('business', 'Business'),
-        ('software development', 'Software Development'),
+        ('Health and Fitness','health and fitness'),
+        ('Mental Health', 'mental health'),
+        ('Medicine', 'medicine'),
+        ('Law', 'law'),
+        ('Technology', 'technology'),
+        ('Public Health', 'public health'),
+        ('Nutrition', 'nutrition'),
+        ('Molecular Biology', 'molecular biology'),
+        ('Pharmacology','pharmacology'),
+        ('Biomedical Science', 'biomedical science'),
+        ('Microbiology', 'microbiology'),
+        ('Anatomy and Physiology', 'anatomy and physiology'),
+        ('Immunology', 'immunology'),
+        ('Environmental Science', 'environmental science' ),
+        ('Business', 'business'),
+        ('Software Development', 'software development'),
     ]
 
 #Range Choices
