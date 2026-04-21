@@ -19,7 +19,8 @@ class PostSerializer(serializers.ModelSerializer):
             'state',
             'created_at',
             'author_name',
-            'author_role'
+            'author_role',
+            'research_link'
         ]
 
     def get_author_name(self, obj):
@@ -27,7 +28,22 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_author_role(self, obj):
         return obj.author.role
-    
+
+class CreatePostSerializer(serializers.ModelSerializer):
+    tags = serializers.MultipleChoiceField(choices=TAG_CHOICES)
+
+    class Meta:
+        model  = Post
+        fields = [
+            'title', 'body', 'start_date', 'max_participants',
+            'tags', 'state', 'research_link'
+        ]
+
+    def validate(self, data):
+        if not data.get('tags'):
+            raise serializers.ValidationError("At least one tag is required.")
+        return data
+
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
@@ -41,22 +57,3 @@ class ApplicationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['user', 'post']
 
-class CreatePostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = [
-            'title', 'body', 'start_date', 'max_participants',
-            'tags', 'state'
-        ]
-
-def validate_start_date(self, value):
-    if value < timezone.now().date():
-        raise serializers.ValidationError("Start date cannot be in the past.")
-    return value
-
-def validate_tags(self, value):
-    valid_tags = [tag[0] for tag in TAG_CHOICES]
-    for tag in value:
-        if tag not in valid_tags:
-            raise serializers.ValidationError(f"{tag} is not a valid tag.")
-    return value
