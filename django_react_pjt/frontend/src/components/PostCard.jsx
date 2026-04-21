@@ -34,7 +34,38 @@ export default function PostCard({ post, setPosts, getPosts }) {
     tags:             post.tags || [],
     max_participants: post.max_participants,
     start_date:       post.start_date,
+    research_link:    post.research_link || '',
   })
+
+  const [showPreApply, setShowPreApply] = useState(false)
+  const [preApplyForm, setPreApplyForm] = useState({
+  has_read_post:      false,
+  meets_requirements: false,
+  has_consented:      false,
+  })
+  const [preApplyError, setPreApplyError] = useState('')
+
+function handlePreApplyChange(e) {
+  setPreApplyForm({ ...preApplyForm, [e.target.name]: e.target.checked })
+  if (preApplyError) setPreApplyError('')
+}
+
+async function handleFinalApply() {
+  if (!preApplyForm.has_read_post)
+    return setPreApplyError('Please confirm you have read the post.')
+  if (!preApplyForm.meets_requirements)
+    return setPreApplyError('Please confirm you meet the requirements.')
+  if (!preApplyForm.has_consented)
+    return setPreApplyError('Please confirm you consent to participate.')
+
+  try {
+    await applyToPost(post.id)
+    setApplied(true)
+    window.open(post.research_link, '_blank')
+  } catch (err) {
+    setPreApplyError('Failed to submit application.')
+  }
+}
 
   const handleApply = async (postId) => {
     const response = await applyToPost(postId)
@@ -149,6 +180,17 @@ export default function PostCard({ post, setPosts, getPosts }) {
           </label>
 
           {error && <p style={{ color: 'red' }}>{error}</p>}
+          
+          <label>Research Link
+            <input
+              type="url"
+              name="research_link"
+              value={form.research_link}
+              onChange={handleChange}
+              placeholder="https://..."
+              style={{ display: 'block', width: '100%' }}
+            />
+          </label>
 
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
             <button onClick={handleEdit} style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
@@ -188,23 +230,93 @@ export default function PostCard({ post, setPosts, getPosts }) {
             </div>
           )}
 
-          {/* Apply button for general users */}
-          {!isAuthenticated ? (
-            <p><a href="/login">Log in</a> to apply to this post.</p>
-          ) : role === 'general_user' && post.state !== 'closed' ? (
-            <>
-              {applied ? (
-                <p>Application submitted successfully.</p>
-              ) : (
-                <button onClick={() => handleApply(post.id)}>Apply</button>
-              )}
-              {error && <p style={{ color: 'red' }}>{error}</p>}
-            </>
-          ) : role === 'general_user' && post.state === 'closed' ? (
-            <p style={{ color: '#dc2626' }}>This post is no longer accepting applications.</p>
-          ) : null}
+{/* Apply form for general users */}
+{!isAuthenticated ? (
+  <p><a href="/login">Log in</a> to apply to this post.</p>
+
+) : role === 'general_user' && post.state !== 'closed' ? (
+  <>
+    {applied ? (
+      <p>Application submitted successfully.</p>
+    ) : showPreApply ? (
+      <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+        <h4 style={{ marginBottom: '0.75rem' }}>Before you apply</h4>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <input
+            type="checkbox"
+            name="has_read_post"
+            checked={preApplyForm.has_read_post}
+            onChange={handlePreApplyChange}
+          />
+          I have read the research post thoroughly
+        </label>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <input
+            type="checkbox"
+            name="meets_requirements"
+            checked={preApplyForm.meets_requirements}
+            onChange={handlePreApplyChange}
+          />
+          I meet the requirements for this research
+        </label>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <input
+            type="checkbox"
+            name="has_consented"
+            checked={preApplyForm.has_consented}
+            onChange={handlePreApplyChange}
+          />
+          I consent to participate in this research
+        </label>
+
+        {preApplyError && <p style={{ color: 'red', fontSize: '0.85rem' }}>{preApplyError}</p>}
+
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            onClick={handleFinalApply}
+            style={{
+              backgroundColor: '#2563eb', color: 'white',
+              border: 'none', padding: '0.5rem 1rem',
+              borderRadius: '6px', cursor: 'pointer'
+            }}
+          >
+            Apply
+          </button>
+          <button
+            onClick={() => setShowPreApply(false)}
+            style={{
+              backgroundColor: '#f3f4f6', border: 'none',
+              padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
         </div>
-      )}
+      </div>
+
+    ) : (
+      <button
+        onClick={() => setShowPreApply(true)}
+        style={{
+          backgroundColor: '#2563eb', color: 'white',
+          border: 'none', padding: '0.5rem 1rem',
+          borderRadius: '6px', cursor: 'pointer',
+          marginTop: '1rem'
+        }}
+      >
+        Apply
+      </button>
+    )}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
+  </>
+
+) : role === 'general_user' && post.state === 'closed' ? (
+  <p style={{ color: '#dc2626' }}>This post is no longer accepting applications.</p>
+) : null}
+  
     </div>
   )
-}
+}/</div>)}

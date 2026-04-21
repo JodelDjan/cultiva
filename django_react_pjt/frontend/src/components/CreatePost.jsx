@@ -30,6 +30,7 @@ export default function CreatePost({ setPosts }) {
     tags:            [],
     max_participants: '',
     start_date:      '',
+    research_link:   '',
   })
 
   function handleChange(e) {
@@ -182,6 +183,18 @@ export default function CreatePost({ setPosts }) {
             </label>
 
             {error && <p style={{ color: 'red' }}>{error}</p>}
+                
+            <label style={{ display: 'block', marginBottom: '1rem' }}>
+              Research Link
+              <input
+                type="url"
+                name="research_link"
+                value={form.research_link}
+                onChange={handleChange}
+                placeholder="https://..."
+                style={{ display: 'block', width: '100%', marginTop: '0.25rem' }}
+              />
+            </label>
 
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
               <button
@@ -194,6 +207,7 @@ export default function CreatePost({ setPosts }) {
                   borderRadius:    '6px',
                   cursor:          'pointer',
                 }}
+                
               >
                 Post
               </button>
