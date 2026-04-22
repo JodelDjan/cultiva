@@ -10,6 +10,12 @@ export default function Login() {
     password: "",
   });
 
+localStorage.setItem('token',      data.access)
+localStorage.setItem('refresh',    data.refresh)
+localStorage.setItem('role',       data.role)
+localStorage.setItem('first_name', data.first_name)
+localStorage.setItem('last_name',  data.last_name)
+
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 

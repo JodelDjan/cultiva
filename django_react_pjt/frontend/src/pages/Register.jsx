@@ -116,12 +116,16 @@ function validate() {
       password: form.password,
       password2: form.password2,
       role: form.role,
-      researchArea: form.researchArea,
-      bio: form.bio,
-      tags: form.tags,
-      ageRange: form.ageRange,
-      interests: form.interests,
-    };
+      researcher_profile: form.role === 'researcher' ? {
+          bio:        form.bio,
+          department: form.researchArea,  
+          tags:       form.tags,
+        } : undefined,
+        general_user_profile: form.role === 'general_user' ? {
+          age_range: form.ageRange,
+          tags:      form.interests,
+        } : undefined,
+      }
 
     try {
       await apiRequest("/users/register/", {

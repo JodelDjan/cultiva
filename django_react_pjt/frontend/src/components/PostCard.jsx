@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { applyToPost, editPost, closePost } from '../api'
 
+
+
 //Tag Options
 const TAG_OPTIONS =[
   'Health and Fitness',
@@ -25,6 +27,11 @@ export default function PostCard({ post, setPosts, getPosts }) {
   const role            = localStorage.getItem('role')
   const token           = localStorage.getItem('token')
   const isAuthenticated = !!token
+  const firstName = localStorage.getItem('first_name')
+  const lastName  = localStorage.getItem('last_name')
+  const fullName  = `${firstName} ${lastName}`
+  const isOwnPost = post.author_name === fullName
+  
   const [applied, setApplied]   = useState(false)
   const [error, setError]       = useState(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -215,18 +222,21 @@ async function handleFinalApply() {
           <p>Posted by: {post.author_name}</p>
 
           {/* Researcher controls — only on their own posts */}
-          {role === 'researcher' && post.author_name !== null && (
+          
+          {role === 'researcher' && isOwnPost && post.state !== 'closed' && (
             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-              {post.state !== 'closed' && (
-                <>
-                  <button onClick={() => setIsEditing(true)} style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-                    Edit
-                  </button>
-                  <button onClick={handleClose} style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-                    Close Post
-                  </button>
-                </>
-              )}
+              <button
+                onClick={() => setIsEditing(true)}
+                style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleClose}
+                style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
+              >
+                Close Post
+              </button>
             </div>
           )}
 
@@ -319,4 +329,5 @@ async function handleFinalApply() {
   
     </div>
   )
-}</div>)}
+}
+</div>)}
