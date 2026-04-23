@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from .models import Post, Application
+from .models import Post, Application, Bookmark, Notification
 from .serializers import PostSerializer, ApplicationSerializer, CreatePostSerializer
 from .permissions import IsResearcher
 from users.models import CustomUser
@@ -153,6 +153,46 @@ class ResearcherDashboardView(APIView):
             })
         return Response(data)
     
+class BookmarkPostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, post=post)
+        if not created:
+            return Response({'error': 'Already bookmarked.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'Post bookmarked.'}, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, post_id):
+        try:
+            bookmark = Bookmark.objects.get(user=request.user, post_id=post_id)
+            bookmark.delete()
+            return Response({'message': 'Bookmark removed.'}, status=status.HTTP_200_OK)
+        except Bookmark.DoesNotExist:
+            return Response({'error': 'Bookmark not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class BookmarkListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        bookmarks = Bookmark.objects.filter(user=request.user).select_related('post')
+        data = [
+            {
+                'bookmark_id': b.id,
+                'post_id':     b.post.id,
+                'title':       b.post.title,
+                'author_name': f"{b.post.author.first_name} {b.post.author.last_name}",
+                'state':       b.post.state,
+                'created_at':  b.created_at,
+            }
+            for b in bookmarks
+        ]
+        return Response(data)
+    
 class EditPostView(APIView):
     permission_classes = [IsAuthenticated, IsResearcher]
 
@@ -180,4 +220,33 @@ class ClosePostView(APIView):
 
         post.state = 'closed'
         post.save()
+
+        #Closed notifications for bookmarked posts    
+        bookmarks = Bookmark.objects.filter(post=post).select_related('user')
+        for bookmark in bookmarks:
+            Notification.objects.create(
+                user    = bookmark.user,
+                message = f'A post you bookmarked "{post.title}" by {post.author.first_name} {post.author.last_name} has been closed.'
+            )
+
         return Response({'message': 'Post closed successfully.'}, status=status.HTTP_200_OK)
+
+class NotificationListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        notifications = Notification.objects.filter(
+            user=request.user
+        ).order_by('-created_at')
+        data = [
+            {
+                'id':         n.id,
+                'message':    n.message,
+                'is_read':    n.is_read,
+                'created_at': n.created_at,
+            }
+            for n in notifications
+        ]
+        # mark all as read when user visits notifications
+        notifications.update(is_read=True)
+        return Response(data)
