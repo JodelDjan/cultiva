@@ -1,10 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-#from .models import CustomUser, ResearcherProfile, GeneralProfile
-# Create your models here.
-
-
 class Post(models.Model):
     STATE_CHOICES = [
         ("open", "Open"),
@@ -21,6 +17,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     research_link = models.URLField(blank=True, null=True)
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} ({self.author.email})"
