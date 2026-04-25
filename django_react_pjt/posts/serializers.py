@@ -20,7 +20,8 @@ class PostSerializer(serializers.ModelSerializer):
             'created_at',
             'author_name',
             'author_role',
-            'research_link'
+            'research_link',
+            'image'
         ]
 
     def get_author_name(self, obj):
@@ -36,7 +37,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
         model  = Post
         fields = [
             'title', 'body', 'start_date', 'max_participants',
-            'tags', 'state', 'research_link'
+            'tags', 'state', 'research_link', 'image'
         ]
 
     def validate_tags(self, value):
