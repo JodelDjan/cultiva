@@ -14,9 +14,13 @@ class PostListView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
+        queryset = Post.objects.all().order_by('-created_at')
+        tag      = self.request.query_params.get('tag', None)
+        if tag:
+            queryset = queryset.filter(tags__contains=tag)
         if self.request.user.is_authenticated:
-            return Post.objects.all().order_by('-created_at')
-        return Post.objects.all().order_by('-created_at')[:3] #Limit to 3 posts
+            return queryset
+        return queryset[:3] #Limit to 3 posts
     
 class PostCreateView(generics.CreateAPIView):
     """Only researchers can create posts"""
