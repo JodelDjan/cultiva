@@ -9,14 +9,17 @@ from users.models import CustomUser
 from rest_framework.parsers import MultiPartParser, FormParser
 
 class PostListView(generics.ListAPIView):
-    """Any logged in user can view posts and guests can too"""
-    #queryset           = Post.objects.all().order_by('-created_at')
-    serializer_class   = CreatePostSerializer
-    permission_classes = [IsAuthenticated, IsResearcher]
-    parser_classes =     [MultiPartParser, FormParser]
+    serializer_class   = PostSerializer
+    permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    def get_queryset(self):
+        queryset = Post.objects.all().order_by('-created_at')
+        tag      = self.request.query_params.get('tag', None)
+        if tag:
+            queryset = queryset.filter(tags__contains=tag)
+        if self.request.user.is_authenticated:
+            return queryset
+        return queryset[:3]
     
 class PostCreateView(generics.CreateAPIView):
     """Only researchers can create posts"""

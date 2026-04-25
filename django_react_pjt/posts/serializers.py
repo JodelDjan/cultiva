@@ -29,7 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_author_role(self, obj):
         return obj.author.role
-
+        
 class CreatePostSerializer(serializers.ModelSerializer):
     tags = serializers.MultipleChoiceField(choices=TAG_CHOICES)
 

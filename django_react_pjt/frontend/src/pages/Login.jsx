@@ -50,8 +50,6 @@ async function handleSubmit(e) {
       }),
     })
 
-localStorage.setItem('token',      data.access)
-localStorage.setItem('refresh',    data.refresh)
 localStorage.setItem('role',       data.role)
 localStorage.setItem('first_name', data.first_name)
 localStorage.setItem('last_name',  data.last_name)

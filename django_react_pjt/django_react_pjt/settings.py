@@ -50,22 +50,29 @@ INSTALLED_APPS = [
 #JWT Authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'users.authentication.CookieJWTAuthentication',
+    ),
+     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',  
+    ),
 }
 
 SIMPLE_JWT = {
     #Note to self: Change token exp time after development
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=24), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'AUTH_COOKIE':            'access_token',
+    'AUTH_COOKIE_SECURE':     False,  # NTS: set True in production with HTTPS
+    'AUTH_COOKIE_HTTP_ONLY':  True,
+    'AUTH_COOKIE_SAMESITE':   'Lax',
 }
 
 #CORS Settings
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
+CORS_ALLOW_CREDENTIALS = True
 
-#CORS_ALLOW_CREDENTIALS = True
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -152,5 +159,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Tells Django about custom user model
 AUTH_USER_MODEL = "users.CustomUser"
 
+#Image uploads in post
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

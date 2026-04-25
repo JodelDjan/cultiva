@@ -16,13 +16,30 @@ class SignUpView(APIView):
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            user    = serializer.save()
             refresh = RefreshToken.for_user(user)
-            return Response({
-                'access':  str(refresh.access_token),
-                'refresh': str(refresh),
-                'role':    user.role
+            response = Response({
+                'role': user.role
             }, status=status.HTTP_201_CREATED)
+
+            response.set_cookie(
+                key      = 'access_token',
+                value    = str(refresh.access_token),
+                httponly = True,
+                secure   = False,
+                samesite = 'Lax',
+                max_age  = 86400,
+            )
+            response.set_cookie(
+                key      = 'refresh_token',
+                value    = str(refresh),
+                httponly = True,
+                secure   = False,
+                samesite = 'Lax',
+                max_age  = 2592000,
+            )
+            return response
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -35,14 +52,31 @@ class LoginView(APIView):
         user     = authenticate(request, email=email, password=password)
 
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'access':     str(refresh.access_token),
-                'refresh':    str(refresh),
+            refresh  = RefreshToken.for_user(user)
+            response = Response({
                 'role':       user.role,
                 'first_name': user.first_name,
                 'last_name':  user.last_name,
             }, status=status.HTTP_200_OK)
+
+            response.set_cookie(
+                key      = 'access_token',
+                value    = str(refresh.access_token),
+                httponly = True,
+                secure   = False,
+                samesite = 'Lax',
+                max_age  = 86400,
+            )
+            response.set_cookie(
+                key      = 'refresh_token',
+                value    = str(refresh),
+                httponly = True,
+                secure   = False,
+                samesite = 'Lax',
+                max_age  = 2592000,
+            )
+            return response
+
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class ProfileView(APIView):
@@ -163,3 +197,12 @@ class EditProfileView(APIView):
             profile.save()
 
         return Response({'message': 'Profile updated successfully.'}, status=status.HTTP_200_OK)
+    
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        response = Response({'message': 'Logged out.'}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response

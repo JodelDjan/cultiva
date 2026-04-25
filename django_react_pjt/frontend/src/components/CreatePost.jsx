@@ -31,12 +31,17 @@ export default function CreatePost({ setPosts }) {
     max_participants: '',
     start_date:      '',
     research_link:   '',
+    image:          null,
   })
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
     if (error) setError('')
   }
+
+  function handleImageChange(e) {
+  setForm({ ...form, image: e.target.files[0] })
+}
 
   function toggleTag(tag) {
     setForm(prev => {
@@ -195,6 +200,34 @@ export default function CreatePost({ setPosts }) {
                 style={{ display: 'block', width: '100%', marginTop: '0.25rem' }}
               />
             </label>
+            
+           {/*Upload images with post */}
+            <label style={{ display: 'block', marginBottom: '1rem' }}>
+              Upload Image (optional)
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'block', marginTop: '0.25rem' }}
+              />
+            </label>
+
+            {form.image && (
+              <img
+                src={URL.createObjectURL(form.image)}
+                alt="Preview"
+                style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem' }}
+              />
+            )}
+
+            {/*Display the image if it exists*/}
+            {post.image && (
+              <img
+                src={`http://localhost:8000${post.image}`}
+                alt={post.title}
+                style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem' }}
+              />
+            )}
 
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
               <button
@@ -207,7 +240,6 @@ export default function CreatePost({ setPosts }) {
                   borderRadius:    '6px',
                   cursor:          'pointer',
                 }}
-                
               >
                 Post
               </button>

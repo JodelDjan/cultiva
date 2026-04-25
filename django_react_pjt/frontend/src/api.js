@@ -10,20 +10,13 @@ export class APIError extends Error {
 }
 
 export const apiRequest = async (endpoint, options = {}) => {
-  const authToken = token()
-  
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
-
-  if (authToken) {
-    headers.Authorization = `Bearer ${authToken}`
-  }
-
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
-    headers
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    }
   })
 
   const data = await response.json()
@@ -42,18 +35,23 @@ export const apiRequest = async (endpoint, options = {}) => {
 export const getPosts = (tag = '') =>
   apiRequest(`/posts/${tag ? `?tag=${encodeURIComponent(tag)}` : ''}`)
 
-export const createPost = (formData) =>
-  apiRequest('/posts/create/', {
-    method: 'POST',
-    body: JSON.stringify({
-      title:            formData.title,
-      body:             formData.body,
-      tags:             formData.tags,
-      max_participants: formData.max_participants,
-      start_date:       formData.start_date,
-      research_link:    formData.research_link,
-    })
-  })
+export const createPost = (formData) => {
+  const data = new FormData()
+  data.append('title',            formData.title)
+  data.append('body',             formData.body)
+  data.append('start_date',       formData.start_date)
+  data.append('max_participants', formData.max_participants)
+  data.append('state',            formData.state || 'open')
+  data.append('research_link',    formData.research_link || '')
+  formData.tags.forEach(tag => data.append('tags', tag))
+  if (formData.image) data.append('image', formData.image)
+
+  return fetch(`${BASE_URL}/posts/create/`, {
+    method:      'POST',
+    credentials: 'include',
+    body:        data,
+  }).then(res => res.json())
+}
 
 export const searchPosts = (query) =>
   apiRequest(`/posts/search/?q=${query}`)
@@ -72,18 +70,23 @@ export const getResearchers = () =>
 export const getDashboard = () =>
   apiRequest('/posts/dashboard/')
 
-export const editPost = (postId, formData) =>
-  apiRequest(`/posts/${postId}/edit/`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      title:            formData.title,
-      body:             formData.body,
-      tags:             formData.tags,
-      max_participants: formData.max_participants,
-      start_date:       formData.start_date,
-      research_link:    formData.research_link,
-    })
-  })
+export const editPost = (postId, formData) => {
+  const data = new FormData()
+  data.append('title',            formData.title)
+  data.append('body',             formData.body)
+  data.append('start_date',       formData.start_date)
+  data.append('max_participants', formData.max_participants)
+  data.append('research_link',    formData.research_link || '')
+  formData.tags.forEach(tag => data.append('tags', tag))
+  if (formData.image) data.append('image', formData.image)
+
+  const authToken = localStorage.getItem('token')
+  return fetch(`${BASE_URL}/posts/${postId}/edit/`, {
+    method:  'PATCH',
+    headers: { Authorization: `Bearer ${authToken}` },
+    body:    data,
+  }).then(res => res.json())
+}
 
 export const closePost = (postId) =>
   apiRequest(`/posts/${postId}/close/`, { method: 'PATCH' })
@@ -114,3 +117,6 @@ export const getBookmarks = () =>
 
 export const getNotifications = () =>
   apiRequest('/posts/notifications/') 
+
+export const logout = () =>
+  apiRequest('/users/logout/', { method: 'POST' })
