@@ -23,12 +23,12 @@ return (
   <div style={{ display: 'flex' }}>
     <SideBar setPosts={setPosts} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-    <div style={{ marginLeft: '72px', flex: 1 }}>
+   <div style={{ marginLeft: '72px', flex: 1, minWidth: 0, width: 'calc(100% - 72px)' }}>
       <Navbar setPosts={setPosts} />
 
       {/* Main content pushed below navbar */}
-      <div style={{ padding: '2rem', marginTop: '60px' }}>
-        <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
+      <div style={{ padding: '1rem', marginTop: '60px' }}>
+        <div style={{ display: 'flex', gap: '2rem', marginBottom: '0.5rem', borderBottom: '1px solid #e5e7eb' }}>
           <button
             onClick={() => setActiveTab('feed')}
             style={{
@@ -37,6 +37,7 @@ return (
               paddingBottom: '0.75rem',
               fontSize:      '0.95rem',
               fontWeight:    activeTab === 'feed' ? '600' : '400',
+              //borderBottom: '1px solid #e5e7eb',
               transition:    'all 0.2s',
             }}
           >

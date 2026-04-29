@@ -82,6 +82,12 @@ class ApplyToPostView(APIView):
             post.max_participants -= 1
             post.save()
 
+        # notify the researcher of new application
+        Notification.objects.create(
+            user    = post.author,
+            message = f'{request.user.first_name} {request.user.last_name} applied to your post "{post.title}".'
+        )
+
         serializer = ApplicationSerializer(application)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

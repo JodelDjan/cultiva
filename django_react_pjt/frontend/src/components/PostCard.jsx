@@ -144,8 +144,8 @@ async function handleBookmark() {
   }
 
   return (
-    <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-
+    <div className="post-card">
+    <div>
       {/* Closed badge */}
       {post.state === 'closed' && (
         <span style={{
@@ -368,4 +368,5 @@ async function handleBookmark() {
   )
   
 }
+</div>
 </div>)}

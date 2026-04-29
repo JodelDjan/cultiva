@@ -12,7 +12,9 @@ export default function Directory() {
   }, [])
 
   return (
+    
     <div>
+      <div className="directory">
       <h2>Researcher Directory</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {researchers.length === 0
@@ -21,6 +23,7 @@ export default function Directory() {
               <ResearcherCard key={index} researcher={researcher} />
             ))
         }
+        </div>
       </div>
     </div>
   )

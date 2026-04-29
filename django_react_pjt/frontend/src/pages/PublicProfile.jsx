@@ -13,6 +13,7 @@ export default function PublicProfile() {
   if (!profile) return <p>Loading...</p>
 
   return (
+    <div className="auth-page">
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '1rem' }}>
       <h1>{profile.first_name} {profile.last_name}</h1>
 
@@ -62,5 +63,6 @@ export default function PublicProfile() {
         )}
       </div>
     </div>
+  </div>
   )
 }

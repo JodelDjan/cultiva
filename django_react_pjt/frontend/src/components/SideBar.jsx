@@ -22,7 +22,7 @@ export default function Sidebar({ setPosts, activeTab, setActiveTab }) {
   const [showCreatePost, setShowCreatePost] = useState(false)
 
   useEffect(() => {
-    if (role === 'general_user') {
+    if (role === 'general_user' || role == 'researcher') {
       getNotifications().then(data => {
         if (Array.isArray(data)) {
           setUnreadCount(data.filter(n => !n.is_read).length)
@@ -35,9 +35,10 @@ export default function Sidebar({ setPosts, activeTab, setActiveTab }) {
   const navItems = [
     ...(role === 'researcher' ? [
       { id: 'dashboard', icon: 'bi-grid', label: 'Dashboard', action: () => navigate('/dashboard') },
+      { id: 'notifications', icon: 'bi-bell',       label: 'Notifications', action: () => navigate('/notifications'), badge: unreadCount },
     ] : []),
     ...(role === 'general_user' ? [
-      { id: 'applications', icon: 'bi-file-earmark-text', label: 'My Applications', action: () => navigate('/applications') },
+      { id: 'applications', icon: 'bi-file-earmark-text' , label: 'My Applications', action: () => navigate('/applications') },
       { id: 'bookmarks',    icon: 'bi-bookmark',          label: 'Bookmarks',        action: () => navigate('/bookmarks') },
       { id: 'notifications', icon: 'bi-bell',             label: 'Notifications',    action: () => navigate('/notifications'), badge: unreadCount },
     ] : []),
@@ -66,7 +67,7 @@ export default function Sidebar({ setPosts, activeTab, setActiveTab }) {
         onClick={() => navigate('/')}
         style={{ cursor: 'pointer', marginBottom: '1.5rem' }}
       >
-        <i className="bi bi-flower1" style={{ fontSize: '1.8rem', color: '#2563eb' }}></i>
+        <i className="bi bi-house-door-fill" style={{ fontSize: '1.8rem', color: '#96DDA5' }}></i>
       </div>
 
       
@@ -136,27 +137,30 @@ export default function Sidebar({ setPosts, activeTab, setActiveTab }) {
       {/* Create post button for researchers */}
       {role === 'researcher' && (
         <div
-          style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', marginTop: 'auto' }}
+          style={{ position: 'relative', width: '100%',
+          display: 'flex', justifyContent: 'center', marginTop: 'auto' }}
           onMouseEnter={() => setHoveredItem('create')}
           onMouseLeave={() => setHoveredItem(null)}
         >
-          <button
-            onClick={() => setShowCreatePost(true)} 
-            style={{
-              //backgroundColor: '#2563eb',
-              color:           'white',
-              border:          'none',
-              borderRadius:    '50%',
-              width:           '2px',
-              height:          '50px',
-              fontSize:        '1.4rem',
-              cursor:          'pointer',
-              display:         'flex',
-              alignItems:      'center',
-              justifyContent:  'center',
-            }}
-          >
-            <i className="bi bi-plus"></i>
+        <button
+        onClick={() => setShowCreatePost(true)}
+        style={{
+            backgroundColor: '#96DDA5',
+            color:           'black',
+            border:          'none',
+            borderRadius:    '50%',
+            width:           '30px',
+            height:          '40px',
+            fontSize:        '1rem',
+            cursor:          'pointer',
+            display:         'flex',
+            alignItems:      'center',
+            justifyContent:  'center',
+            outline:         'none',
+            boxShadow:       'none',
+        }}
+        >
+            <i className="bi-plus-lg"></i>
           </button>
 
           {hoveredItem === 'create' && (

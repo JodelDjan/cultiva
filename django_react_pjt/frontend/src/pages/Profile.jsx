@@ -18,6 +18,7 @@ export default function Profile() {
   if (!profile) return <p>Loading...</p>
 
   return (
+     <div className="auth-page">
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '1rem' }}>
 
       {/* Shared header */}
@@ -86,7 +87,7 @@ export default function Profile() {
           </div>
         </>
       )}
-
+      </div>
     </div>
   )
 }
