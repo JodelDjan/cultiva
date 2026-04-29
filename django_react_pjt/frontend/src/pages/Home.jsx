@@ -20,19 +20,20 @@ export default function Home() {
   }, [])
 
 return (
-  <div style={{ display: 'flex' }}>
+  <div style={{ display: 'flex', minHeight: '100vh', width: '100%', overflow: 'hidden' }}>
     <SideBar setPosts={setPosts} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-   <div style={{ marginLeft: '72px', flex: 1, minWidth: 0, width: 'calc(100% - 72px)' }}>
+   <div style={{ marginLeft: '72px', flex: 1, minWidth: 0 }}>
       <Navbar setPosts={setPosts} />
 
-      {/* Main content pushed below navbar */}
+      {/* Main feed content */}
       <div style={{ padding: '1rem', marginTop: '60px' }}>
         <div style={{ display: 'flex', gap: '2rem', marginBottom: '0.5rem', borderBottom: '1px solid #e5e7eb' }}>
           <button
             onClick={() => setActiveTab('feed')}
             style={{
               background:    'none',
+              border:        'none',
               cursor:        'pointer',
               paddingBottom: '0.75rem',
               fontSize:      '0.95rem',
@@ -47,6 +48,7 @@ return (
             onClick={() => setActiveTab('directory')}
             style={{
               background:    'none',
+              border:        'none',
               cursor:        'pointer',
               paddingBottom: '0.75rem',
               fontSize:      '0.95rem',
@@ -57,7 +59,7 @@ return (
             Researcher Directory
           </button>
         </div>
-        {/*{role === 'researcher' && <CreatePost setPosts={setPosts} />}*/}
+        {/*{if role === 'researcher' && <CreatePost setPosts={setPosts} />}*/}
         
         {activeTab === 'feed'      && <Feed posts={posts} setPosts={setPosts} />}
         {activeTab === 'directory' && <Directory />}
