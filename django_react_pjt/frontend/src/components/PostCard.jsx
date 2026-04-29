@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { applyToPost, editPost, closePost,  bookmarkPost, removeBookmark } from '../api'
-
-
+import EditPost from './EditPost'
+import { createPortal } from 'react-dom'
 
 
 //Tag Options
@@ -35,7 +35,7 @@ export default function PostCard({ post, setPosts, getPosts, initialBookmarked =
   
   const [applied, setApplied]   = useState(false)
   const [error, setError]       = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
+ const [isEditing, setIsEditing] = useState(false)
   const [form, setForm] = useState({
     title:            post.title,
     body:             post.body,
@@ -161,118 +161,47 @@ async function handleBookmark() {
         </span>
       )}
 
-      {/* Edit form */}
-      {isEditing ? (
-        <div>
-          <label>Title
-            <input type="text" name="title" value={form.title} onChange={handleChange}
-              style={{ display: 'block', width: '100%' }} />
-          </label>
 
-          <label>Body
-            <textarea name="body" value={form.body} onChange={handleChange}
-              rows={4} style={{ display: 'block', width: '100%' }} />
-          </label>
 
+          {/* Post display */}
           <div>
-            <div>Tags</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
-              {TAG_OPTIONS.map(tag => {
-                const selected = form.tags.includes(tag)
-                return (
-                  <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{
-                    padding: '0.3rem 0.6rem', borderRadius: '999px',
-                    border: selected ? '1px solid #2563eb' : '1px solid #ccc',
-                    backgroundColor: selected ? '#2563eb' : '#f5f5f5',
-                    color: selected ? 'white' : 'black',
-                    cursor: 'pointer', fontSize: '0.8rem',
-                  }}>
-                    {tag}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+            <p>Start Date: {post.start_date}</p>
+            <p>Tags: {post.tags && post.tags.join(', ')}</p>
+            <p>Created: {new Date(post.created_at).toLocaleDateString()}</p>
+            <p>Max Participants: {post.max_participants}</p>
+            <p>Posted by: {post.author_name}</p>
 
-          <label>Max Participants
-            <input type="number" name="max_participants" value={form.max_participants}
-              onChange={handleChange} style={{ display: 'block', width: '100%' }} />
-          </label>
-
-          <label>Start Date
-            <input type="date" name="start_date" value={form.start_date}
-              onChange={handleChange} style={{ display: 'block', width: '100%' }} />
-          </label>
-
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          
-          <label>Research Link
-            <input
-              type="url"
-              name="research_link"
-              value={form.research_link}
-              onChange={handleChange}
-              placeholder="https://..."
-              style={{ display: 'block', width: '100%' }}
-            />
-          </label>
-
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-            <button onClick={handleEdit} style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-              Save
-            </button>
-            <button onClick={() => setIsEditing(false)} style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-              Cancel
-            </button>
-          </div>
+      {/* Researcher controls */}
+      {role === 'researcher' && isOwnPost && post.state !== 'closed' && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+          <button
+            onClick={() => setIsEditing(true)}
+            style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleClose}
+            style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
+          >
+            Close Post
+          </button>
         </div>
+      )}
 
-      ) : (
+      {/* Edit modal */}
+      {isEditing && createPortal(
+        <EditPost
+          post={post}
+          setPosts={setPosts}
+          onClose={() => setIsEditing(false)}
+        />,
+        document.body
+      )}
 
-        /* Post display */
-        <div>
-          <h2>{post.title}</h2>
-          <p>{post.body}</p>
-          <p>Start Date: {post.start_date}</p>
-          <p>Tags: {post.tags && post.tags.join(', ')}</p>
-          <p>Created: {new Date(post.created_at).toLocaleDateString()}</p>
-          <p>Max Participants: {post.max_participants}</p>
-          <p>Posted by: {post.author_name}</p>
 
-          {/* Researcher controls — only on their own posts */}
-          
-          {role === 'researcher' && isOwnPost && post.state !== 'closed' && (
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-              <button
-                onClick={() => setIsEditing(true)}
-                style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
-              >
-                Edit
-              </button>
-              <button
-                onClick={handleClose}
-                style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}
-              >
-                Close Post
-              </button>
-            </div>
-          )}
-          {role === 'general_user' && (
-            <button
-              onClick={handleBookmark}
-              style={{
-                backgroundColor: bookmarked ? '#fef08a' : '#f3f4f6',
-                border:          'none',
-                padding:         '0.4rem 0.8rem',
-                borderRadius:    '6px',
-                cursor:          'pointer',
-                marginTop:       '0.5rem',
-                marginRight:     '0.5rem',
-              }}
-            >
-              {bookmarked ? '★ Bookmarked' : '☆ Bookmark'}
-            </button>
-          )}
 
 {/* Apply form for general users */}
 {!isAuthenticated ? (
@@ -365,8 +294,5 @@ async function handleBookmark() {
 ) : null}
   
     </div>
-  )
-  
-}
 </div>
 </div>)}
