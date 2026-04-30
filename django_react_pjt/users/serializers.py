@@ -10,7 +10,7 @@ class ResearcherProfileSerializer(serializers.ModelSerializer):
 class GeneralProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model  = GeneralProfile
-        fields = ['age_range', 'tags']
+        fields = ['age_range', 'interests']
 
 
 class SignUpSerializer(serializers.ModelSerializer):
