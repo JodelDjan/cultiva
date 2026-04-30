@@ -30,6 +30,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_author_role(self, obj):
         return obj.author.role
+    
+    def get_image(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None
         
 class CreatePostSerializer(serializers.ModelSerializer):
     tags = serializers.JSONField()

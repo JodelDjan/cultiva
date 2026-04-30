@@ -9,7 +9,7 @@ const TAG_OPTIONS = [
   'Business', 'Software Development',
 ]
 
-export default function EditPost({ post, setPosts, onClose }) {
+export default function EditPost({ post, setPosts, onClose, handleClose }) {
   const [error, setError] = useState('')
   const [form, setForm]   = useState({
     title:            post.title,
@@ -156,7 +156,7 @@ export default function EditPost({ post, setPosts, onClose }) {
         </label>
 
         <label style={{ display: 'block', marginBottom: '1rem' }}>
-          Research Link
+          Research Link 
           <input
             type="url"
             name="research_link"
@@ -196,31 +196,48 @@ export default function EditPost({ post, setPosts, onClose }) {
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-          <button
-            onClick={handleSubmit}
-            style={{
-              backgroundColor: '#2563eb',
-              color:           'white',
-              border:          'none',
-              padding:         '0.5rem 1.5rem',
-              borderRadius:    '6px',
-              cursor:          'pointer',
-            }}
-          >
-            Save
-          </button>
-          <button
-            onClick={() => { onClose(); setError('') }}
-            style={{
-              backgroundColor: '#f3f4f6',
-              border:          'none',
-              padding:         '0.5rem 1.5rem',
-              borderRadius:    '6px',
-              cursor:          'pointer',
-            }}
-          >
-            Cancel
-          </button>
+ 
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <button
+              onClick={handleSubmit}
+              style={{
+                backgroundColor: '#2563eb',
+                color:           'white',
+                border:          'none',
+                padding:         '0.5rem 1.5rem',
+                borderRadius:    '6px',
+                cursor:          'pointer',
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={handleClose}
+              style={{
+                backgroundColor: '#fee2e2',
+                color:           '#dc2626',
+                border:          'none',
+                padding:         '0.5rem 1.5rem',
+                borderRadius:    '6px',
+                cursor:          'pointer',
+              }}
+            >
+              Close Post
+            </button>
+            <button
+              onClick={() => { onClose(); setError('') }}
+              style={{
+                backgroundColor: '#ff0000',
+                border:          'none',
+                padding:         '0.5rem 1.5rem',
+                borderRadius:    '6px',
+                cursor:          'pointer',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        
         </div>
       </div>
     </div>

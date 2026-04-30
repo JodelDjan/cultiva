@@ -32,10 +32,9 @@ export default function PostCard({ post, setPosts, getPosts, initialBookmarked =
   const lastName  = localStorage.getItem('last_name')
   const fullName  = `${firstName} ${lastName}`
   const isOwnPost = post.author_name === fullName
-  
   const [applied, setApplied]   = useState(false)
   const [error, setError]       = useState(null)
- const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [form, setForm] = useState({
     title:            post.title,
     body:             post.body,
@@ -54,6 +53,7 @@ export default function PostCard({ post, setPosts, getPosts, initialBookmarked =
   const [preApplyError, setPreApplyError] = useState('')
 
   const [bookmarked, setBookmarked] = useState(initialBookmarked)
+  console.log(post.image)
 
 useEffect(() => {
   const role = localStorage.getItem('role')
@@ -224,16 +224,11 @@ async function handleBookmark() {
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
             <button
               onClick={() => setIsEditing(true)}
-              style={{ backgroundColor: '#f3f4f6', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+              style={{ backgroundColor: '#96DDA5', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
             >
-              <i className="bi bi-pencil"></i> Edit
+              <i className="bi bi-pencil"></i>
             </button>
-            <button
-              onClick={handleClose}
-              style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-            >
-              <i className="bi bi-x-circle"></i> Close
-            </button>
+
           </div>
         )}
       </div>
@@ -244,6 +239,7 @@ async function handleBookmark() {
           post={post}
           setPosts={setPosts}
           onClose={() => setIsEditing(false)}
+          handleClose={handleClose}
         />,
         document.body
       )}
@@ -283,11 +279,13 @@ async function handleBookmark() {
       {/* Image */}
       {post.image && (
         <img
-          src={`http://localhost:8000${post.image}`}
+          src={post.image}
           alt={post.title}
           style={{ width: '100%', borderRadius: '8px', marginBottom: '0.75rem', maxHeight: '300px', objectFit: 'cover' }}
         />
       )}
+
+
 
       {/* Divider */}
       <hr style={{ borderColor: '#e5e7eb', margin: '0.75rem 0' }} />

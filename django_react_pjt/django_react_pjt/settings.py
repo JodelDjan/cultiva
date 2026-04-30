@@ -72,6 +72,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_URLS_REGEX = r'^.*$'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
