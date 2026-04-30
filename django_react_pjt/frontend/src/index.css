@@ -32,40 +32,90 @@ body {
   background-color: #043E54;
 }
 
+/*Scroll wheel styling*/
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius:    999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
 /*Login Page Styling*/
 .auth-page {
   background-color: #FFFF67;
-  min-height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-y: auto;
+  min-height:       100vh;
+  width:            100vw;
+  position:         fixed;
+  top:              0;
+  left:             0;
+  overflow-y:       auto;
 }
 
 .auth-layout {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;       
-  justify-content: flex-start; 
-  padding-left: 10%;        
+  min-height:      100vh;
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: flex-start;
+  padding:         4rem 10%;
 }
 
-.auth-card {
-  width: 100%;
+.auth-form {
+  width:     100%;
   max-width: 420px;
+  /*display:   flex;
+  flex-direction: column;
+  gap:       1.25rem;*/
 }
 
-.auth-card input,
-.auth-card select,
-.auth-card textarea {
+.auth-form h1 {
+  font-size:   1.6rem;
+  font-weight: 700;
+  margin:      1.5rem;
+  color:       #111;
+}
+
+.form-group {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.4rem;
+  margin-bottom:  0.75rem;
+}
+
+.form-group label {
+  font-size:   0.875rem;
+  font-weight: 500;
+  color:       #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
   background-color: #fff;
-  color: #000;
+  border:           1px solid #d1d5db;
+  border-radius:    6px;
+  padding:          0.4rem 0.65rem;
+  font-size:        0.875rem;
+  font-family:      'Inter', sans-serif;
+  color:            #111;
+  outline:          none;
+  width:            100%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  /*border-color: #2563eb;*/
+  box-shadow:   0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 /*Postcard styling*/

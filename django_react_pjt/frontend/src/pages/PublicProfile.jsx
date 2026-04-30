@@ -34,7 +34,7 @@ export default function PublicProfile() {
             <span key={tag} style={{
               padding:         '0.3rem 0.6rem',
               borderRadius:    '999px',
-              backgroundColor: '#2563eb',
+              backgroundColor: '#96DDA5',
               color:           'white',
               fontSize:        '0.8rem'
             }}>

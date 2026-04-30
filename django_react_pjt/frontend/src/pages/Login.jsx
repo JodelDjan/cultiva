@@ -81,16 +81,14 @@ localStorage.setItem('token',      data.access)
   }
 }
 
-  return (
-    <div className="auth-page">
-      <div className="auth-layout">
-        <div className="auth-card bg-white p-4 rounded shadow">
+return (
+  <div className="auth-page">
+    <div className="auth-layout">
+      <div className="auth-form">
+        <h1>Sign In</h1>
 
-      <h1>Login</h1>
-
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
+        <div className="form-group">
+          <label>Email</label>
           <input
             type="email"
             name="email"
@@ -99,10 +97,10 @@ localStorage.setItem('token',      data.access)
             required
             disabled={isLoading}
           />
-        </label>
+        </div>
 
-        <label>
-          Password
+        <div className="form-group">
+          <label>Password</label>
           <input
             type="password"
             name="password"
@@ -111,24 +109,41 @@ localStorage.setItem('token',      data.access)
             required
             disabled={isLoading}
           />
-        </label>
+        </div>
 
         {error && (
-          <p style={{ color: "red", padding: "0.5rem", backgroundColor: "#ffe6e6", borderRadius: "4px" }}>
-            {error}
-          </p>
+          <p style={{ color: 'red', fontSize: '0.875rem' }}>{error}</p>
         )}
 
-        <button 
-          type="submit" 
-          style={{ marginTop: "1rem" }}
+        <button
+          onClick={handleSubmit}
           disabled={isLoading}
+          style={{
+            backgroundColor: '#111',
+            color:           'white',
+            border:          'none',
+            padding:         '0.65rem 1.5rem',
+            borderRadius:    '6px',
+            cursor:          'pointer',
+            fontWeight:      '500',
+            fontSize:        '0.95rem',
+            fontFamily:      'Inter, sans-serif',
+            marginTop:       '0.5rem',
+          }}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
-      </form>
-          </div>
-        </div>
+
+        <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          Don't have an account?{' '}
+          <span
+            onClick={() => navigate('/register')}
+            style={{ color: '#2563eb', cursor: 'pointer', fontWeight: '500' }}
+          >
+            Register
+          </span>
+        </p>
       </div>
-  );
-}
+    </div>
+  </div>
+)}
