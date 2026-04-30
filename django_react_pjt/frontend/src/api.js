@@ -35,7 +35,7 @@ export const apiRequest = async (endpoint, options = {}) => {
 export const getPosts = (tag = '') =>
   apiRequest(`/posts/${tag ? `?tag=${encodeURIComponent(tag)}` : ''}`)
 
-export const createPost = (formData) => {
+export const createPost = (formData, notify = false) => {
   const data = new FormData()
   data.append('title',            formData.title)
   data.append('body',             formData.body)
@@ -44,6 +44,7 @@ export const createPost = (formData) => {
   data.append('state',            formData.state || 'open')
   data.append('research_link',    formData.research_link || '')
   data.append('tags',             JSON.stringify(formData.tags))
+  data.append('notify_matching',  notify)
   if (formData.image) data.append('image', formData.image)
 
   const authToken = localStorage.getItem('token')
@@ -54,6 +55,8 @@ export const createPost = (formData) => {
     body:        data,
   }).then(res => res.json())
 }
+export const reopenPost = (postId) =>
+  apiRequest(`/posts/${postId}/reopen/`, { method: 'PATCH' })
 
 export const searchPosts = (query) =>
   apiRequest(`/posts/search/?q=${query}`)
@@ -119,6 +122,9 @@ export const getBookmarks = () =>
 
 export const getNotifications = () =>
   apiRequest('/posts/notifications/') 
+
+export const deletePost = (postId) =>
+  apiRequest(`/posts/${postId}/delete/`, { method: 'DELETE' })
 
 export const logout = () =>
   apiRequest('/users/logout/', { method: 'POST' })

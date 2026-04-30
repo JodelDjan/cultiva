@@ -9,7 +9,7 @@ const TAG_OPTIONS = [
   'Business', 'Software Development',
 ]
 
-export default function EditPost({ post, setPosts, onClose, handleClose }) {
+export default function EditPost({ post, setPosts, onClose, onToggleState, onDelete }) {
   const [error, setError] = useState('')
   const [form, setForm]   = useState({
     title:            post.title,
@@ -23,7 +23,6 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
-    if (error) setError('')
   }
 
   function handleImageChange(e) {
@@ -41,8 +40,8 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
   }
 
   async function handleSubmit() {
-    if (!form.title.trim())     return setError('Title is required.')
-    if (!form.body.trim())      return setError('Body is required.')
+    if (!form.title.trim()) return setError('Title is required.')
+    if (!form.body.trim())  return setError('Body is required.')
     if (form.tags.length === 0) return setError('Please select at least one tag.')
 
     try {
@@ -51,9 +50,8 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
         if (Array.isArray(data)) setPosts(data)
       })
       onClose()
-      setError('')
     } catch (err) {
-      setError('Failed to update post. Please try again.')
+      setError('Failed to update post.')
     }
   }
 
@@ -156,7 +154,7 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
         </label>
 
         <label style={{ display: 'block', marginBottom: '1rem' }}>
-          Research Link 
+          Research Link
           <input
             type="url"
             name="research_link"
@@ -187,7 +185,7 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
 
         {post.image && !form.image && (
           <img
-            src={`http://localhost:8000${post.image}`}
+            src={post.image}
             alt="Current image"
             style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem' }}
           />
@@ -196,48 +194,64 @@ export default function EditPost({ post, setPosts, onClose, handleClose }) {
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
- 
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button
-              onClick={handleSubmit}
-              style={{
-                backgroundColor: '#2563eb',
-                color:           'white',
-                border:          'none',
-                padding:         '0.5rem 1.5rem',
-                borderRadius:    '6px',
-                cursor:          'pointer',
-              }}
-            >
-              Save
-            </button>
-            <button
-              onClick={handleClose}
-              style={{
-                backgroundColor: '#fee2e2',
-                color:           '#dc2626',
-                border:          'none',
-                padding:         '0.5rem 1.5rem',
-                borderRadius:    '6px',
-                cursor:          'pointer',
-              }}
-            >
-              Close Post
-            </button>
-            <button
-              onClick={() => { onClose(); setError('') }}
-              style={{
-                backgroundColor: '#ff0000',
-                border:          'none',
-                padding:         '0.5rem 1.5rem',
-                borderRadius:    '6px',
-                cursor:          'pointer',
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        
+          <button
+            onClick={handleSubmit}
+            style={{
+              backgroundColor: '#2563eb',
+              color:           'white',
+              border:          'none',
+              padding:         '0.5rem 1.5rem',
+              borderRadius:    '6px',
+              cursor:          'pointer',
+            }}
+          >
+            Save
+          </button>
+
+          <button
+            onClick={onToggleState}
+            style={{
+              backgroundColor: post.state === 'open' ? '#fee2e2' : '#e5e7eb',
+              color:           post.state === 'open' ? '#dc2626' : '#6b7280',
+              border:          'none',
+              padding:         '0.5rem 1.5rem',
+              borderRadius:    '6px',
+              cursor:          'pointer',
+              display:         'flex',
+              alignItems:      'center',
+              gap:             '0.4rem',
+            }}
+          >
+            <i className={`bi bi-toggle-${post.state === 'open' ? 'on' : 'off'}`}></i>
+            {post.state === 'open' ? 'Close Post' : 'Reopen Post'}
+          </button>
+
+          <button
+            onClick={onDelete}
+            style={{
+              backgroundColor: '#dc2626',
+              color:           'white',
+              border:          'none',
+              padding:         '0.5rem 1.5rem',
+              borderRadius:    '6px',
+              cursor:          'pointer',
+            }}
+          >
+            <i className="bi bi-trash"></i> Delete
+          </button>
+
+          <button
+            onClick={() => { onClose(); setError('') }}
+            style={{
+              backgroundColor: '#f3f4f6',
+              border:          'none',
+              padding:         '0.5rem 1.5rem',
+              borderRadius:    '6px',
+              cursor:          'pointer',
+            }}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

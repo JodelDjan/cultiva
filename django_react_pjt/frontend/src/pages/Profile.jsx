@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getProfile, getPosts } from '../api'
+import { getProfile, getPosts, logout } from '../api'
 import { useNavigate } from 'react-router-dom'
 import PostCard from '../components/PostCard'
 import SideBar from '../components/SideBar'
@@ -22,6 +22,20 @@ export default function Profile() {
     post => post.author_name === `${profile.first_name} ${profile.last_name}`
   )
 
+  async function handleLogout() {
+    try {
+      await logout()
+    } catch (err) {
+      // continue with logout even if API call fails
+    }
+    localStorage.removeItem('token')
+    localStorage.removeItem('refresh')
+    localStorage.removeItem('role')
+    localStorage.removeItem('first_name')
+    localStorage.removeItem('last_name')
+    navigate('/login')
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
       <SideBar setPosts={setPosts} />
@@ -34,26 +48,46 @@ export default function Profile() {
           padding:         '2rem',
           color:           'black',
         }}>
-          {/* Name row with edit button */}
+
+          {/* Name row with buttons */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: '600' }}>
               {profile.first_name} {profile.last_name}
             </h1>
-            <button
-              onClick={() => navigate('/profile/edit')}
-              style={{
-                backgroundColor: 'white',
-                color:           '#02968A',
-                border:          'none',
-                padding:         '0.4rem 1rem',
-                borderRadius:    '6px',
-                cursor:          'pointer',
-                fontWeight:      '500',
-                fontSize:        '0.85rem',
-              }}
-            >
-              Edit Profile
-            </button>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => navigate('/profile/edit')}
+                style={{
+                  backgroundColor: '#2563eb',
+                  color:           'white',
+                  border:          'none',
+                  padding:         '0.4rem 1rem',
+                  borderRadius:    '6px',
+                  cursor:          'pointer',
+                  fontWeight:      '500',
+                  fontSize:        '0.85rem',
+                }}
+              >
+                Edit Profile
+              </button>
+
+              <button
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: '#fee2e2',
+                  color:           '#dc2626',
+                  border:          'none',
+                  padding:         '0.4rem 1rem',
+                  borderRadius:    '6px',
+                  cursor:          'pointer',
+                  fontWeight:      '500',
+                  fontSize:        '0.85rem',
+                }}
+              >
+                <i className="bi bi-box-arrow-right"></i> Log Out
+              </button>
+            </div>
           </div>
 
           {/* Researcher specific header info */}

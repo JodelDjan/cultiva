@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from .models import Post, Application, Bookmark, Notification
 from .serializers import PostSerializer, ApplicationSerializer, CreatePostSerializer
 from .permissions import IsResearcher
-from users.models import CustomUser
+from users.models import CustomUser, GeneralProfile
 from rest_framework.parsers import MultiPartParser, FormParser
 
 class PostListView(generics.ListAPIView):
@@ -22,13 +22,38 @@ class PostListView(generics.ListAPIView):
         return queryset[:3]
     
 class PostCreateView(generics.CreateAPIView):
-    """Only researchers can create posts"""
-    serializer_class   = PostSerializer
+    serializer_class   = CreatePostSerializer
     permission_classes = [IsAuthenticated, IsResearcher]
+    parser_classes     = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        post = serializer.save(author=self.request.user)
 
+        # send notifications to general users with matching tags
+        if self.request.data.get('notify_matching', False):
+            post_tags = post.tags
+                
+            # fallback for JSONField — check manually
+            all_profiles = GeneralProfile.objects.select_related('user')
+            for profile in all_profiles:
+                if any(tag in profile.interests for tag in post_tags):
+                    Notification.objects.create(
+                        user    = profile.user,
+                        message = f'{self.request.user.first_name} {self.request.user.last_name} posted "{post.title}" which matches your interests.'
+                    )
+
+class ReopenPostView(APIView):
+    permission_classes = [IsAuthenticated, IsResearcher]
+
+    def patch(self, request, post_id):
+        try:
+            post = Post.objects.get(id=post_id, author=request.user)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        post.state = 'open'
+        post.save()
+        return Response({'message': 'Post reopened.'}, status=status.HTTP_200_OK)
 
 class PostSearchView(generics.ListAPIView):
     """Search posts by content"""
@@ -38,7 +63,19 @@ class PostSearchView(generics.ListAPIView):
     def get_queryset(self):
         query = self.request.query_params.get('q', '')
         return Post.objects.filter(content__icontains=query).order_by('-created_at')
-    
+
+class DeletePostView(APIView):
+    permission_classes = [IsAuthenticated, IsResearcher]
+
+    def delete(self, request, post_id):
+        try:
+            post = Post.objects.get(id=post_id, author=request.user)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        post.delete()
+        return Response({'message': 'Post deleted.'}, status=status.HTTP_200_OK)
+
 class ApplyToPostView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -260,3 +297,4 @@ class NotificationListView(APIView):
         # mark all as read when user visits notifications
         notifications.update(is_read=True)
         return Response(data)
+    

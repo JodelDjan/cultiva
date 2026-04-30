@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { applyToPost, editPost, closePost,  bookmarkPost, removeBookmark, getApplications, getBookmarks } from '../api'
+import { applyToPost, editPost, closePost,  bookmarkPost, removeBookmark, getApplications, getBookmarks, deletePost} from '../api'
 import EditPost from './EditPost'
 import { createPortal } from 'react-dom'
 
@@ -70,6 +70,19 @@ useEffect(() => {
     })
   }
 }, [post.id])
+
+async function handleDelete() {
+  try {
+    await deletePost(post.id)
+    if (getPosts) {
+      getPosts().then(data => {
+        if (Array.isArray(data)) setPosts(data)
+      })
+    }
+  } catch (err) {
+    setError('Failed to delete post.')
+  }
+}
 
 function handlePreApplyChange(e) {
   setPreApplyForm({ ...preApplyForm, [e.target.name]: e.target.checked })
@@ -267,7 +280,7 @@ async function handleBookmark() {
             padding:         '0.2rem 0.6rem',
             borderRadius:    '999px',
             backgroundColor: '#eff6ff',
-            color:           '#2563eb',
+            color:           '#96DDA5',
             fontSize:        '0.75rem',
             fontWeight:      '500',
           }}>
@@ -376,7 +389,7 @@ async function handleBookmark() {
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button
                       onClick={handleFinalApply}
-                      style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}
+                      style={{ backgroundColor: '#96DDA5', color: 'white', border: 'none', padding: '0.4rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem' }}
                     >
                       Confirm & Apply
                     </button>

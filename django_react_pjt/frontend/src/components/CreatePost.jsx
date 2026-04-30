@@ -21,7 +21,7 @@ const TAG_OPTIONS =[
   'Software Development',
 ]
 
-export default function CreatePost({ setPosts, onClose }) {
+export default function CreatePost({ setPosts, onClose,notify = false }) {
   const [isOpen, setIsOpen]   = useState(false)
   const [error, setError]     = useState('')
   const [form, setForm]       = useState({
@@ -58,13 +58,15 @@ export default function CreatePost({ setPosts, onClose }) {
     if (!form.body.trim())  return setError('Body is required.')
     if (form.tags.length === 0) return setError('Please select at least one tag.')
 
+      console.log('submitting form:', form)
+      console.log('notify:', notify)
     try {
-      await createPost(form)
+      await createPost(form, notify)
       getPosts().then(data => {
         if (Array.isArray(data)) setPosts(data)
       })
-      setIsOpen(false)
-      setForm({ title: '', body: '', tags: [], max_participants: '', start_date: '' })
+      onClose()
+      setForm({ title: '', body: '', tags: [], max_participants: '', start_date: '', research_link: '', image: null })
       setError('')
     } catch (err) {
       setError('Failed to create post. Please try again.')

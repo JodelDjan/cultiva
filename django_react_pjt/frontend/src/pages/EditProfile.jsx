@@ -148,8 +148,8 @@ export default function EditProfile() {
                     style={{
                       padding:         '0.3rem 0.6rem',
                       borderRadius:    '999px',
-                      border:          selected ? '1px solid #2563eb' : '1px solid #ccc',
-                      backgroundColor: selected ? '#2563eb' : '#f5f5f5',
+                      border:          selected ? '1px solid #96DDA5' : '1px solid #ccc',
+                      backgroundColor: selected ? '#96DDA5' : '#f5f5f5',
                       color:           selected ? 'white' : 'black',
                       cursor:          'pointer',
                       fontSize:        '0.8rem',
@@ -218,7 +218,7 @@ export default function EditProfile() {
         <button
           onClick={handleSubmit}
           style={{
-            backgroundColor: '#2563eb', color: 'white',
+            backgroundColor: '#96DDA5', color: 'white',
             border: 'none', padding: '0.5rem 1.5rem',
             borderRadius: '6px', cursor: 'pointer'
           }}
@@ -228,7 +228,7 @@ export default function EditProfile() {
         <button
           onClick={() => navigate('/profile')}
           style={{
-            backgroundColor: '#f3f4f6', border: 'none',
+            backgroundColor: '#ff0000', border: 'none',
             padding: '0.5rem 1.5rem', borderRadius: '6px', cursor: 'pointer'
           }}
         >
