@@ -33,11 +33,11 @@ function validate() {
 
 async function handleSubmit(e) {
   e.preventDefault()
-    const validationError = validate()
-    if (validationError){
-      setError(validationError)
-      return
-    }
+  const validationError = validate()
+  if (validationError) {
+    setError(validationError)
+    return
+  }
   setError("")
   setIsLoading(true)
 
@@ -45,17 +45,43 @@ async function handleSubmit(e) {
     const data = await apiRequest("/users/login/", {
       method: "POST",
       body: JSON.stringify({
-        email: form.email,
+        email:    form.email,
         password: form.password,
       }),
     })
 
-console.log('Login response:', data)
+    console.log('Login response:', data)
 
-localStorage.setItem('role',       data.role)
-localStorage.setItem('first_name', data.first_name)
-localStorage.setItem('last_name',  data.last_name)
-localStorage.setItem('token',      data.access)
+    localStorage.setItem('token',      data.access)
+    localStorage.setItem('role',       data.role)
+    localStorage.setItem('first_name', data.first_name)
+    localStorage.setItem('last_name',  data.last_name)
+
+    if (data.role === 'researcher') {
+      navigate('/')
+    } else {
+      navigate('/')
+    }
+
+  } catch (err) {
+    if (err instanceof APIError) {
+      if (err.status === 0) {
+        setError("Cannot connect to server. Is Django running on port 8000?")
+      } else if (err.status === 401) {
+        setError("Invalid email or password")
+      } else {
+        setError(err.message || "An error occurred during login")
+      }
+    } else {
+      setError("An unexpected error occurred")
+    }
+    console.error("Login error:", err)
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+
 
     if (data.role === 'researcher') {
       navigate('/')
